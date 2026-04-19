@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/your-username/git-workflow-demo.git'
+                git branch: 'dev', url: 'https://github.com/BhagathK7/git-workflow-demo.git'
             }
         }
 
@@ -14,9 +14,16 @@ pipeline {
             }
         }
 
+        stage('Stop Old Container') {
+            steps {
+                sh 'docker stop git-container || true'
+                sh 'docker rm git-container || true'
+            }
+        }
+
         stage('Run Container') {
             steps {
-                sh 'docker run -d -p 5000:5000 git-workflow-app'
+                sh 'docker run -d -p 5000:5000 --name git-container git-workflow-app'
             }
         }
     }
